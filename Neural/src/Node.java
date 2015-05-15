@@ -1,23 +1,40 @@
 import java.util.Random;
 
-
 public class Node {
 	private static Random rand;
 	double[] dweights;
 	double output;
+	int layer;
 	double bias;
 	
-	
-	public Node(int l){
+
+	public Node(int l, int layer) {
 		bias = 1;
-		dweights=new double[l];
+		dweights = new double[l];
 		for (int i = 0; i < dweights.length; i++) {
-			dweights[i]=rand.nextDouble();
+			dweights[i] = rand.nextDouble(); // TODO mudar isto
 		}
-		
+		this.layer = layer;
 	}
-	
-	static void init(){
-		rand=new Random();
+
+	public void forward() {
+		double sum = bias;
+		for (int i = 0; i < dweights.length; i++) {
+			sum += dweights[i] * Network.network[layer - 1][i].getOutput();
+		}
+		output=sigmoid(sum);
+	}
+
+	public double getOutput() {
+		return output;
+	}
+
+	static void init() {
+		rand = new Random();
 	};
+
+	static double sigmoid(double x) {
+		return (1.0) / (1.0 + Math.exp(-x));
+	}
+
 }
