@@ -3,6 +3,7 @@ import java.util.Random;
 
 public class Node {
 	private static Random rand;
+	public double delta;
 	public double[] dweights;
 	double output;
 	int layer;
