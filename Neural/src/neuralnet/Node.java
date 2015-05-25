@@ -1,12 +1,12 @@
+package neuralnet;
 import java.util.Random;
 
 public class Node {
 	private static Random rand;
-	double[] dweights;
+	public double[] dweights;
 	double output;
 	int layer;
 	double bias;
-	
 
 	public Node(int l, int layer) {
 		bias = 1;
@@ -22,7 +22,7 @@ public class Node {
 		for (int i = 0; i < dweights.length; i++) {
 			sum += dweights[i] * Network.network[layer - 1][i].getOutput();
 		}
-		output=sigmoid(sum);
+		output = sigmoid(sum);
 	}
 
 	public double getOutput() {
@@ -36,5 +36,4 @@ public class Node {
 	static double sigmoid(double x) {
 		return (1.0) / (1.0 + Math.exp(-x));
 	}
-
 }

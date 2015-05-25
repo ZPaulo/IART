@@ -1,7 +1,9 @@
+package neuralnet;
+
 public class Network {
 
-	static Node[][] network;
-	static double[][] input;
+	public static Node[][] network;
+	public static double[][] input;
 	static double target;
 	static double error;
 
