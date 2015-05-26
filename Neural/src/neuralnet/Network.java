@@ -1,9 +1,11 @@
 package neuralnet;
 
+import java.util.ArrayList;
+
 public class Network {
 
 	public static Node[][] network;
-	public static double[][] input;
+	public static ArrayList<ArrayList<Double>> input;
 	static double target;
 	static double error, realError;
 	static double learningRate;
