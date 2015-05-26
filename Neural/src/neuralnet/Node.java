@@ -17,6 +17,13 @@ public class Node {
 		}
 		this.layer = layer;
 	}
+	
+
+	public Node(double d) {
+		this.output = d;
+		layer = 0;
+	}
+
 
 	public void forward() {
 		double sum = bias;
