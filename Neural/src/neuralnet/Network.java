@@ -20,10 +20,6 @@ public class Network {
 		for (int i = 1; i < network.length; i++) {
 			for (int j = 0; j < network[i].length; j++) {
 				network[i][j] = new Node(network[i - 1].length, i);
-				for (int j2 = 0; j2 < network[i][j].dweights.length; j2++) {
-					// System.out.println("Peso Nó " + i + "-" + j + "[" + j2
-					// + "]" + network[i][j].dweights[j2]);
-				}
 			}
 		}
 		// teste
