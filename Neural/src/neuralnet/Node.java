@@ -1,4 +1,5 @@
 package neuralnet;
+
 import java.util.Random;
 
 public class Node {
@@ -13,17 +14,17 @@ public class Node {
 		bias = 1;
 		dweights = new double[l];
 		for (int i = 0; i < dweights.length; i++) {
-			dweights[i] = rand.nextDouble(); // TODO mudar isto
+			dweights[i] = rand.nextDouble();// TODO mudar isto
+			if (rand.nextBoolean() == true)
+				dweights[i] *= -1;
 		}
 		this.layer = layer;
 	}
-	
 
 	public Node(double d) {
 		this.output = d;
 		layer = 0;
 	}
-
 
 	public void forward() {
 		double sum = bias;
