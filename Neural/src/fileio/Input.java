@@ -22,13 +22,4 @@ public class Input {
 		br.close();
 	}
 
-	static public void main(String args[]) throws IOException {
-		read_input("train_data.txt");
-		for (int i = 0; i < Network.input.size(); i++) {
-			System.out.println("Input " + i);
-			for (int j = 0; j < Network.input.get(i).size(); j++) {
-				System.out.print(Network.input.get(i).get(j) + "-");
-			}
-		}
-	}
 }
