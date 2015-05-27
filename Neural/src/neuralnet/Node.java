@@ -4,9 +4,10 @@ import java.util.Random;
 
 public class Node {
 	private static Random rand;
-	public double delta;
+	public double gradient;
 	public double[] dweights;
 	public double output;
+	public double biasWeight;
 	int layer;
 	double bias;
 
@@ -18,6 +19,10 @@ public class Node {
 			if (rand.nextBoolean() == true)
 				dweights[i] *= -1;
 		}
+		
+		biasWeight = rand.nextDouble();// TODO mudar isto
+		if (rand.nextBoolean() == true)
+			biasWeight *= -1;
 		this.layer = layer;
 	}
 
@@ -27,7 +32,7 @@ public class Node {
 	}
 
 	public void forward() {
-		double sum = bias;
+		double sum = bias * biasWeight;
 		for (int i = 0; i < dweights.length; i++) {
 			sum += dweights[i] * Network.network[layer - 1][i].getOutput();
 		}

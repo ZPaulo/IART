@@ -24,7 +24,7 @@ public class Network {
 			}
 		}
 		// teste
-		target = 0.7;
+		target = 0.3;
 		error = 1;
 		realError = 1;
 		learningRate = 0.9;
@@ -35,16 +35,13 @@ public class Network {
 				network[0][i] = new Node(7);
 		}
 
-		int i = 0;
-		while (realError > 0.001) {
+		while (realError > 0.0001) {
 			forward();
 			backPropagation();
 			System.out.println("Error is " + realError);
 
 			System.out.println("Output is "
 					+ network[network.length - 1][0].getOutput());
-			i++;
-			
 		}
 
 	}
@@ -61,7 +58,7 @@ public class Network {
 
 	static void backPropagation() {
 
-		network[network.length - 1][0].delta = network[network.length - 1][0]
+		network[network.length - 1][0].gradient = network[network.length - 1][0]
 				.getOutput()
 				* (1 - network[network.length - 1][0].getOutput())
 				* error;
@@ -71,10 +68,10 @@ public class Network {
 				// retropropagar o erro para as camadas seguintes
 				double sum = 0;
 				for (int k = 0; k < network[i + 1].length; k++) {
-					sum += network[i + 1][k].delta
+					sum += network[i + 1][k].gradient
 							* network[i + 1][k].dweights[j];
 				}
-				network[i][j].delta = network[i][j].getOutput()
+				network[i][j].gradient = network[i][j].getOutput()
 						* (1 - network[i][j].getOutput()) * sum;
 			}
 		}
@@ -83,10 +80,13 @@ public class Network {
 			for (int j = 0; j < network[i].length; j++) {
 				for (int k = 0; k < network[i][j].dweights.length; k++) {
 					// modificar os pesos
-					double deltaW = network[i][j].delta
+					double deltaW = network[i][j].gradient
 							* network[i - 1][k].getOutput();
-					network[i][j].dweights[k] -= learningRate * deltaW;
+					network[i][j].dweights[k] += learningRate * deltaW;
+					System.out.println("This is delta " + learningRate * deltaW);
 				}
+				//modificar o peso do bias
+				network[i][j].biasWeight += learningRate * network[i][j].gradient * network[i][j].bias;  
 			}
 		}
 
