@@ -6,7 +6,7 @@ public class Node {
 	private static Random rand;
 	public double delta;
 	public double[] dweights;
-	double output;
+	public double output;
 	int layer;
 	double bias;
 

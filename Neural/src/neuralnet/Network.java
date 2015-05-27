@@ -10,7 +10,8 @@ public class Network {
 	static double error, realError;
 	static double learningRate;
 
-	static public void main(String[] args) {
+	static public void Init() {
+		
 		network = new Node[3][];
 		network[0] = new Node[26];
 		network[1] = new Node[27];// TODO provisorio
@@ -43,6 +44,7 @@ public class Network {
 			System.out.println("Output is "
 					+ network[network.length - 1][0].getOutput());
 			i++;
+			
 		}
 
 	}
