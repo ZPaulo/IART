@@ -83,7 +83,7 @@ public class Network {
 					double deltaW = network[i][j].gradient
 							* network[i - 1][k].getOutput();
 					network[i][j].dweights[k] += learningRate * deltaW;
-					System.out.println("This is delta " + learningRate * deltaW);
+					//System.out.println("This is delta " + learningRate * deltaW);
 				}
 				//modificar o peso do bias
 				network[i][j].biasWeight += learningRate * network[i][j].gradient * network[i][j].bias;  
