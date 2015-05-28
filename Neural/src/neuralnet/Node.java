@@ -6,8 +6,8 @@ public class Node {
 	private static Random rand;
 	public double gradient;
 	public double[] dweights;
+	public double output;
 	public double biasWeight;
-	double output;
 	int layer;
 	double bias;
 

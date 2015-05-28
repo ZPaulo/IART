@@ -11,7 +11,8 @@ public class Network {
 	static int numErrors;
 	static double learningRate;
 
-	static public void main(String[] args) {
+	static public void Init() {
+		
 		network = new Node[3][];
 		network[0] = new Node[input.get(0).size()];
 		network[1] = new Node[45];// TODO provisorio
@@ -37,6 +38,7 @@ public class Network {
 
 		while (realError > 0.0001) {
 
+<<<<<<< HEAD
 			numErrors = 0;
 			sumErrors = 0;
 			
@@ -50,6 +52,10 @@ public class Network {
 			realError = (1/(2*numErrors)) * sumErrors;
 
 			System.out.println("Error is " + realError);
+=======
+			System.out.println("Output is "
+					+ network[network.length - 1][0].getOutput());
+>>>>>>> branch 'master' of https://github.com/ZPaulo/IART.git
 		}
 
 	}
