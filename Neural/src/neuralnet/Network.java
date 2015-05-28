@@ -7,13 +7,14 @@ public class Network {
 	public static Node[][] network;
 	public static ArrayList<ArrayList<Double>> input;
 	static double target;
-	static double error, realError;
+	static double error, realError, sumErrors;
+	static int numErrors;
 	static double learningRate;
 
 	static public void main(String[] args) {
 		network = new Node[3][];
-		network[0] = new Node[26];
-		network[1] = new Node[27];// TODO provisorio
+		network[0] = new Node[input.get(0).size()];
+		network[1] = new Node[45];// TODO provisorio
 		network[2] = new Node[1];
 		Node.init();
 
@@ -23,24 +24,32 @@ public class Network {
 			}
 		}
 		// teste
-		target = 0.3;
+		target = 0.7;
 		error = 1;
 		realError = 1;
 		learningRate = 0.9;
 		for (int i = 0; i < network[0].length; i++) {
 			if (i % 2 == 0)
-				network[0][i] = new Node(5);
+				network[0][i] = new Node(0);
 			else
-				network[0][i] = new Node(7);
+				network[0][i] = new Node(0);
 		}
 
 		while (realError > 0.0001) {
-			forward();
-			backPropagation();
-			System.out.println("Error is " + realError);
 
-			System.out.println("Output is "
-					+ network[network.length - 1][0].getOutput());
+			numErrors = 0;
+			sumErrors = 0;
+			
+			for(int i = 0; i < input.size(); i++){
+				for(int j = 0; j < input.get(i).size(); j++){
+					network[0][j].output = input.get(i).get(j);
+				}
+				forward();
+				backPropagation();
+			}
+			realError = (1/(2*numErrors)) * sumErrors;
+
+			System.out.println("Error is " + realError);
 		}
 
 	}
@@ -51,8 +60,9 @@ public class Network {
 				network[i][j].forward();
 			}
 		}
-		error = target - network[network.length - 1][0].getOutput();
-		realError = 0.5 * (error * error);
+		error = network[network.length - 1][0].getOutput() - target;
+		sumErrors += error*error;
+		numErrors++;
 	}
 
 	static void backPropagation() {
@@ -81,11 +91,10 @@ public class Network {
 					// modificar os pesos
 					double deltaW = network[i][j].gradient
 							* network[i - 1][k].getOutput();
-					network[i][j].dweights[k] += learningRate * deltaW;
-					System.out.println("This is delta " + learningRate * deltaW);
+					network[i][j].dweights[k] -= learningRate * deltaW;
 				}
 				//modificar o peso do bias
-				network[i][j].biasWeight += learningRate * network[i][j].gradient * network[i][j].bias;  
+				network[i][j].biasWeight -= learningRate * network[i][j].gradient * network[i][j].bias;  
 			}
 		}
 
