@@ -50,7 +50,6 @@ public class Network {
 			}
 			realError = (1/(2*numErrors)) * sumErrors;
 
-			System.out.println("Error is " + realError);
 		}
 
 	}
