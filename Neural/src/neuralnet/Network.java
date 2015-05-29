@@ -38,7 +38,6 @@ public class Network {
 
 		while (realError > 0.0001) {
 
-<<<<<<< HEAD
 			numErrors = 0;
 			sumErrors = 0;
 			
@@ -52,10 +51,6 @@ public class Network {
 			realError = (1/(2*numErrors)) * sumErrors;
 
 			System.out.println("Error is " + realError);
-=======
-			System.out.println("Output is "
-					+ network[network.length - 1][0].getOutput());
->>>>>>> branch 'master' of https://github.com/ZPaulo/IART.git
 		}
 
 	}
