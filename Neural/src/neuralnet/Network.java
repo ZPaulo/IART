@@ -25,6 +25,7 @@ public class Network {
 			}
 		}
 		// teste
+		//my teste
 		target = 0.7;
 		error = 1;
 		realError = 1;
