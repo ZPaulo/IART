@@ -41,8 +41,6 @@ public class Interface extends JPanel {
 		JFrame f = new JFrame();
 		f.add(this);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		hNodes = Network.network[1].length;
-		wNodes = Network.network.length;
 		f.setSize(700, 600);
 		f.setVisible(true);
 	}

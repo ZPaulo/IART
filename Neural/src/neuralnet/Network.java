@@ -1,6 +1,9 @@
 package neuralnet;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import fileio.Input;
 
 public class Network {
 
@@ -8,57 +11,71 @@ public class Network {
 	public static ArrayList<ArrayList<Double>> input;
 	static double target;
 	static double error, realError, sumErrors;
-	static int numErrors;
+	static double numErrors;
 	static double learningRate;
 	static int numHiddenLayers;
 	static int[] numNodes;
 
 	static public void Init(String[] args) {
 		
+		try {
+			Input.read_input("train_data.txt");
+		} catch (IOException e) {
+			System.out.println("Couldn't read file");
+		}
+		
 		numHiddenLayers = Integer.parseInt(args[0]);
 		
 		network = new Node[numHiddenLayers + 2][];
-		network[0] = new Node[input.get(0).size()];
 		
 		for(int i = 1; i < args.length; i++){
-			network[i+1] = new Node[Integer.parseInt(args[i])];
+			network[i] = new Node[Integer.parseInt(args[i])];
 		}
-		network[2] = new Node[1];
+		network[numHiddenLayers + 1] = new Node[1];
 		
 		Node.init();
+
+		network[0] = new Node[input.get(0).size() - 2];
 
 		for (int i = 1; i < network.length; i++) {
 			for (int j = 0; j < network[i].length; j++) {
 				network[i][j] = new Node(network[i - 1].length, i);
 			}
 		}
-		// teste
-		//target = 0.7;
-		error = 1;
+		
 		realError = 1;
-		learningRate = 0.9;
-		for (int i = 0; i < network[0].length; i++) {
-			if (i % 2 == 0)
-				network[0][i] = new Node(0);
-			else
-				network[0][i] = new Node(0);
-		}
+		learningRate = 0.5;
 
-		while (realError > 0.0001) {
+		while (realError > 0.01) {
 
 			numErrors = 0;
 			sumErrors = 0;
 			
+			
 			for(int i = 0; i < input.size(); i++){
-				for(int j = 0; j < input.get(i).size(); j++){
-					network[0][j].output = input.get(i).get(j);
+
+				network[0] = new Node[input.get(i).size() - 2];
+
+				for(int j = 0; j < network[0].length; j++){
+					network[0][j] = new Node(input.get(i).get(j));
 				}
+				
+				target = input.get(i).get(input.get(i).size()-1);
 				forward();
 				backPropagation();
 			}
-			realError = (1/(2*numErrors)) * sumErrors;
-
+			realError = sumErrors / (2*numErrors);
+			System.out.println("Error is " + realError);
 		}
+		
+		network[0] = new Node[input.get(0).size() - 2];
+		for(int j = 0; j < network[0].length; j++){
+			network[0][j] = new Node(input.get(0).get(j));
+		}
+		
+		forward();
+		System.out.println("Output is " + network[2][0].output);
+		System.out.println("Target is " + input.get(0).get(input.get(0).size()-1));
 
 	}
 
@@ -68,12 +85,14 @@ public class Network {
 				network[i][j].forward();
 			}
 		}
-		error = network[network.length - 1][0].getOutput() - target;
-		sumErrors += error*error;
-		numErrors++;
 	}
 
 	static void backPropagation() {
+		
+
+		error = network[network.length - 1][0].getOutput() - target;
+		sumErrors += error*error;
+		numErrors++;
 
 		network[network.length - 1][0].gradient = network[network.length - 1][0]
 				.getOutput()
