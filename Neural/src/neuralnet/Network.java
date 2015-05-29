@@ -10,13 +10,21 @@ public class Network {
 	static double error, realError, sumErrors;
 	static int numErrors;
 	static double learningRate;
+	static int numHiddenLayers;
+	static int[] numNodes;
 
-	static public void Init() {
+	static public void Init(String[] args) {
 		
-		network = new Node[3][];
+		numHiddenLayers = Integer.parseInt(args[0]);
+		
+		network = new Node[numHiddenLayers + 2][];
 		network[0] = new Node[input.get(0).size()];
-		network[1] = new Node[45];// TODO provisorio
+		
+		for(int i = 1; i < args.length; i++){
+			network[i+1] = new Node[Integer.parseInt(args[i])];
+		}
 		network[2] = new Node[1];
+		
 		Node.init();
 
 		for (int i = 1; i < network.length; i++) {
@@ -25,8 +33,7 @@ public class Network {
 			}
 		}
 		// teste
-		//my teste
-		target = 0.7;
+		//target = 0.7;
 		error = 1;
 		realError = 1;
 		learningRate = 0.9;

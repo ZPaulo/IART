@@ -21,19 +21,19 @@ public class Interface extends JPanel {
 	
 	public static void main(String[] args)
 	{
-		new Interface();
+		new Interface(args);
 	}
 	
 	/**
 	 * Create the frame.
 	 */
-	public Interface() {
+	public Interface(String[] args) {
 		
 		Thread t = new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
-				Network.Init();
+				Network.Init(args);
 			}
 		});
 		t.start();
