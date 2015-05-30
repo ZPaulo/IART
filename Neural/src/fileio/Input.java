@@ -14,13 +14,15 @@ public class Input {
 	static public void read_input(String filename) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(filename));
 		String line;
-		Network.input = new ArrayList<ArrayList<Double>>();
+		Network.input = new ArrayList<ArrayList<ArrayList<Double>>>();
 		while ((line = br.readLine()) != null) {
 			String[] inputs = line.split(",");
 			ArrayList<Double> ad = new ArrayList<Double>();
 			for (int i = 0; i < inputs.length; i++)
 				ad.add(Double.parseDouble(inputs[i]));
-			Network.input.add(ad);
+			if(Network.input.size()<ad.get(0))
+				Network.input.add(new ArrayList<ArrayList<Double>>());
+			Network.input.get(ad.get(0).intValue()).add(ad);
 		}
 		br.close();
 	}
