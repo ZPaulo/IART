@@ -20,7 +20,7 @@ public class Output {
 				}
 				line = line.substring(0, line.length() - 1) + ";";
 			}
-			line += "\n";
+			line = line.substring(0, line.length() - 1) + "\n";
 		}
 		line = line.substring(0, line.length());
 		System.out.println(line);
