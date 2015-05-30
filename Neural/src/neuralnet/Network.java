@@ -11,11 +11,12 @@ public class Network {
 	public static Node[][] network;
 	public static ArrayList<ArrayList<Double>> input, inputCopy;
 	static double target;
-	static double error, realError, sumErrors;
+	static double error, realError, sumErrors,prevRealError;
 	static double numErrors;
 	static double learningRate;
 	static int numHiddenLayers;
 	static int[] numNodes;
+	static int numHits,numTests; 
 
 	static public void Init(String[] args) {
 
@@ -45,29 +46,60 @@ public class Network {
 		}
 
 		realError = 1;
-		learningRate = 0.7;
+		prevRealError = 0;
+		learningRate = 0.1;
+		int numTimes = 0;
 
-		while (realError > 0.131) {
+		while (numTimes < 2000) {
+
+			numTimes++;
+
+			if(realError < 0.001)
+				break;
 
 			numErrors = 0;
 			sumErrors = 0;
+			prevRealError = realError;
 
 			randomInput();
 			realError = sumErrors / (2*numErrors);
-			System.out.println("Error is " + realError);
+			if(numTimes % 100 == 0)
+				System.out.println("Error is " + realError);
 		}
 
-		network[0] = new Node[input.get(523).size() - 2];
-		for(int j = 0; j < network[0].length; j++){
-			network[0][j] = new Node(input.get(523).get(j));
+		testFase();
+
+	}
+
+	public static void testFase() {
+		
+		try {
+			Input.read_input("test_data.txt");
+		} catch (IOException e) {
+			System.out.println("Couldn't read file");
+		}
+		
+		numHits = 0;
+		numTests = 0;
+		
+		for(int i = 0; i < input.size(); i++){
+			network[0] = new Node[input.get(i).size() - 2];
+			for(int j = 1; j < input.get(i).size() - 1; j++){
+				network[0][j-1] = new Node(input.get(i).get(j));
+			}
+			
+			forward();
+			target = input.get(i).get(input.get(i).size()-1);
+			if(Math.ceil(network[numHiddenLayers+1][0].output) == target)
+				numHits++;
+			numTests++;
 		}
 
-		forward();
-		target = input.get(0).get(input.get(0).size()-1);
-		System.out.println("Output is " + network[network.length - 1][0].output);
-		System.out.println("Target is " + input.get(0).get(input.get(0).size()-1));
-		System.out.println(network[network.length - 1][0].getOutput() - target);
-
+		
+		
+		
+		System.out.println("Final error is " + realError);
+		System.out.println("Correct output was achieved in " + (numHits / numTests)*100 + "% of the times");
 	}
 
 	static void forward() {
@@ -150,11 +182,13 @@ public class Network {
 			int randomPos;
 			if(turn){
 				randomPos = rand.nextInt((inputCopy.size() - 1)/2 + 1);
-				turn = false;
+				if (rand.nextBoolean() == true)
+					turn = false;
 			}
 			else{
 				randomPos = rand.nextInt(((inputCopy.size() - 1) - ((inputCopy.size() - 1)/2)) + 1) + (inputCopy.size() - 1)/2;
-				turn = true;
+				if (rand.nextBoolean() == true)
+					turn = true;
 			}
 			network[0] = new Node[inputCopy.get(randomPos).size() - 3];
 
