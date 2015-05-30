@@ -5,25 +5,27 @@ import java.util.Random;
 public class Node {
 	private static Random rand;
 	public double gradient;
-	public double[] dweights, prevWeights;
+	public double[] dweights, prevWeights, acumWeights;
 	public double output;
-	public double biasWeight,prevBiasWeight;
+	public double biasWeight,prevBiasWeight, acumB;
 	int layer;
 	double bias;
 
 	public Node(int l, int layer) {
 		bias = 1;
 		dweights = new double[l];
+		acumWeights = new double[l];
 		for (int i = 0; i < dweights.length; i++) {
 			dweights[i] = rand.nextDouble();// TODO mudar isto
 			if (rand.nextBoolean() == true)
 				dweights[i] *= -1;
+			acumWeights[i] = dweights[i];
 		}
 		
 		biasWeight = rand.nextDouble();// TODO mudar isto
 		if (rand.nextBoolean() == true)
 			biasWeight *= -1;
-		
+		acumB = biasWeight;
 		prevBiasWeight = 2;
 		this.layer = layer;
 	}
