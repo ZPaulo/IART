@@ -32,7 +32,8 @@ public class Input {
 			String[] inputs = line.split(",");
 			for (int i = 0; i < inputs.length-2; i++)
 				bw.write(inputs[i]+",");
-			bw.write(inputs[inputs.length-1]+"\n");
+			bw.write(inputs[inputs.length-1]);
+			bw.newLine();
 		}
 		bw.close();
 		br.close();

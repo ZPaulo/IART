@@ -13,13 +13,13 @@ public class Network {
 	static double target;
 	static double error, realError, sumErrors,prevRealError;
 	static double numErrors;
-	static double learningRate;
+	static double learningRate,momentum;
 	static int numHiddenLayers;
 	static int[] numNodes;
-	static int numHits,numTests; 
+	static double numHits,numTests; 
 
 	static public void Init(String[] args) {
-
+		
 		try {
 			Input.read_input("train_data.txt");
 		} catch (IOException e) {
@@ -47,7 +47,8 @@ public class Network {
 
 		realError = 1;
 		prevRealError = 0;
-		learningRate = 0.1;
+		learningRate = 0.01;
+		momentum = 0.05;
 		int numTimes = 0;
 
 		while (numTimes < 2000) {
@@ -79,8 +80,8 @@ public class Network {
 			System.out.println("Couldn't read file");
 		}
 		
-		numHits = 0;
-		numTests = 0;
+		numHits = 0.0;
+		numTests = 0.0;
 		
 		for(int i = 0; i < input.size(); i++){
 			network[0] = new Node[input.get(i).size() - 2];
@@ -90,16 +91,17 @@ public class Network {
 			
 			forward();
 			target = input.get(i).get(input.get(i).size()-1);
-			if(Math.ceil(network[numHiddenLayers+1][0].output) == target)
+			
+			if(((double) Math.round(network[numHiddenLayers+1][0].output)) == target)
 				numHits++;
+			
 			numTests++;
 		}
-
-		
-		
 		
 		System.out.println("Final error is " + realError);
-		System.out.println("Correct output was achieved in " + (numHits / numTests)*100 + "% of the times");
+		
+		double hitRatio = (numHits / numTests);
+		System.out.println("Correct output was achieved " + hitRatio * 100.0 + "% of the times");
 	}
 
 	static void forward() {
@@ -144,7 +146,7 @@ public class Network {
 
 					if(network[i][j].prevWeights != null){
 
-						network[i][j].dweights[k] -= (learningRate * deltaW + network[i][j].prevWeights[k] * 0.4);	
+						network[i][j].dweights[k] -= (learningRate * deltaW + network[i][j].prevWeights[k] * momentum);	
 						network[i][j].prevWeights[k] = network[i][j].dweights[k];
 					}
 					else{
@@ -154,7 +156,7 @@ public class Network {
 				}
 				//modificar o peso do bias
 				if(network[i][j].prevBiasWeight != 2){
-					network[i][j].biasWeight -= (learningRate * network[i][j].gradient * network[i][j].bias + 0.4 * network[i][j].prevBiasWeight);
+					network[i][j].biasWeight -= (learningRate * network[i][j].gradient * network[i][j].bias + momentum * network[i][j].prevBiasWeight);
 					network[i][j].prevBiasWeight = network[i][j].biasWeight;
 				}
 				else{
