@@ -11,12 +11,15 @@ public class Network {
 	static int numErrors;
 	static double learningRate;
 
-	static public void Init() {
+static public void Init() {
 		
-		network = new Node[3][];
-		network[0] = new Node[input.get(0).size()];
-		network[1] = new Node[45];// TODO provisorio
-		network[2] = new Node[1];
+		network = new Node[6][];
+		network[0] = new Node[26];
+		network[1] = new Node[27];// TODO provisorio
+		network[2] = new Node[28];
+		network[3] = new Node[28];
+		network[4] = new Node[28];
+		network[5] = new Node[1];
 		Node.init();
 
 		for (int i = 1; i < network.length; i++) {
@@ -25,31 +28,20 @@ public class Network {
 			}
 		}
 		// teste
-		target = 0.7;
+		target = 0.3;
 		error = 1;
 		realError = 1;
 		learningRate = 0.9;
 		for (int i = 0; i < network[0].length; i++) {
 			if (i % 2 == 0)
-				network[0][i] = new Node(0);
+				network[0][i] = new Node(5);
 			else
-				network[0][i] = new Node(0);
+				network[0][i] = new Node(7);
 		}
 
 		while (realError > 0.0001) {
-
-			numErrors = 0;
-			sumErrors = 0;
-			
-			for(int i = 0; i < input.size(); i++){
-				for(int j = 0; j < input.get(i).size(); j++){
-					network[0][j].output = input.get(i).get(j);
-				}
-				forward();
-				backPropagation();
-			}
-			realError = (1/(2*numErrors)) * sumErrors;
-
+			forward();
+			backPropagation();
 		}
 
 	}
@@ -60,10 +52,10 @@ public class Network {
 				network[i][j].forward();
 			}
 		}
-		error = network[network.length - 1][0].getOutput() - target;
-		sumErrors += error*error;
-		numErrors++;
+		error = target - network[network.length - 1][0].getOutput();
+		realError = 0.5 * (error * error);
 	}
+
 
 	static void backPropagation() {
 
