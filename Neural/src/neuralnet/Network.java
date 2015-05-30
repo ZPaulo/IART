@@ -170,9 +170,9 @@ public class Network {
 
 	static void randomInput(){
 
-		inputCopy = new ArrayList<ArrayList<Double>>();
+		inputCopy = new ArrayList<ArrayList<ArrayList<Double>>>();
 		for(int i = 0; i < input.size();i++){
-			ArrayList<Double> temp = new ArrayList<Double>();
+			ArrayList<ArrayList<Double>> temp = new ArrayList<ArrayList<Double>>();
 			for(int j = 0; j < input.get(i).size(); j++)
 				temp.add(input.get(i).get(j));
 			inputCopy.add(temp);
