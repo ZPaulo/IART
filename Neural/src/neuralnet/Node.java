@@ -5,9 +5,9 @@ import java.util.Random;
 public class Node {
 	private static Random rand;
 	public double gradient;
-	public double[] dweights;
+	public double[] dweights, prevWeights;
 	public double output;
-	public double biasWeight;
+	public double biasWeight,prevBiasWeight;
 	int layer;
 	double bias;
 
@@ -23,6 +23,8 @@ public class Node {
 		biasWeight = rand.nextDouble();// TODO mudar isto
 		if (rand.nextBoolean() == true)
 			biasWeight *= -1;
+		
+		prevBiasWeight = 2;
 		this.layer = layer;
 	}
 
