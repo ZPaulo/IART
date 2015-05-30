@@ -22,7 +22,7 @@ public class Input {
 				ad.add(Double.parseDouble(inputs[i]));
 			if(Network.input.size()<ad.get(0))
 				Network.input.add(new ArrayList<ArrayList<Double>>());
-			Network.input.get(ad.get(0).intValue()).add(ad);
+			Network.input.get(ad.get(0).intValue()-1).add(ad);
 		}
 		br.close();
 	}
