@@ -9,7 +9,7 @@ import fileio.Input;
 public class Network {
 
 	public static Node[][] network;
-	public static ArrayList<ArrayList<Double>> input, inputCopy;
+	public static ArrayList<ArrayList<ArrayList<Double>>> input, inputCopy;
 	static double target;
 	static double error, realError, sumErrors,prevRealError;
 	static double numErrors;
@@ -99,6 +99,7 @@ public class Network {
 		}
 		
 		System.out.println("Final error is " + realError);
+		System.out.println(error);
 		
 		double hitRatio = (numHits / numTests);
 		System.out.println("Correct output was achieved " + hitRatio * 100.0 + "% of the times");
