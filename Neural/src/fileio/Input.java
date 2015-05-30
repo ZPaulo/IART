@@ -1,7 +1,9 @@
 package fileio;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -22,7 +24,19 @@ public class Input {
 		}
 		br.close();
 	}
-
+	static public void aux(String filename) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader(filename));
+		BufferedWriter bw = new BufferedWriter(new FileWriter("newfile.txt"));
+		String line;
+		while ((line = br.readLine()) != null) {
+			String[] inputs = line.split(",");
+			for (int i = 0; i < inputs.length-2; i++)
+				bw.write(inputs[i]+",");
+			bw.write(inputs[inputs.length-1]+"\n");
+		}
+		bw.close();
+		br.close();
+	}
 	static public void read_network(String filename,int inputSize) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(filename));
 		String line;
