@@ -4,10 +4,12 @@ import java.util.Random;
 
 public class Node {
 	private static Random rand;
+	public double prevBiasDelta;
+	public double[] deltaWeights;
 	public double gradient;
-	public double[] dweights, prevWeights, acumWeights;
+	public double[] dweights, acumWeights;
 	public double output;
-	public double biasWeight,prevBiasWeight, acumB;
+	public double biasWeight, acumB;
 	int layer;
 	double bias;
 
@@ -26,7 +28,7 @@ public class Node {
 		if (rand.nextBoolean() == true)
 			biasWeight *= -1;
 		acumB = 0;
-		prevBiasWeight = 2;
+		prevBiasDelta = 2;
 		this.layer = layer;
 	}
 

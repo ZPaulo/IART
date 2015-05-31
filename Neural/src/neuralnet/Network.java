@@ -48,11 +48,11 @@ public class Network {
 
 		realError = 1;
 		prevRealError = 0;
-		learningRate = 0.01;
-		momentum = 0.2;
+		learningRate = 0.05;
+		momentum = 0.3;
 		int numTimes = 0;
 
-		while (numTimes < 2000) {
+		while (numTimes < 5000) {
 
 			numTimes++;
 
@@ -66,7 +66,7 @@ public class Network {
 			randomInput();
 			realError = sumErrors / (2*numErrors);
 			if(numTimes % 100 == 0){
-				System.out.println("Error is " + realError + " ------- " + error);
+				System.out.println("Error is " + realError + " ------- Epoch is " + numTimes);
 			}
 		}
 
@@ -145,25 +145,26 @@ public static void testFase() {
 					double deltaW = network[i][j].gradient
 							* network[i - 1][k].getOutput();
 					
-					if(network[i][j].prevWeights != null){
+					if(network[i][j].deltaWeights != null){
 
-						network[i][j].acumWeights[k]  += (learningRate * deltaW + network[i][j].prevWeights[k] * momentum);	
-						network[i][j].prevWeights[k] = network[i][j].acumWeights[k];
+						network[i][j].acumWeights[k]  += (learningRate * deltaW + network[i][j].deltaWeights[k] * momentum);
+						network[i][j].deltaWeights[k] = learningRate * deltaW;
 					}
 					else{
-						network[i][j].prevWeights = new double[network[i][j].dweights.length];
+						network[i][j].deltaWeights = new double[network[i][j].dweights.length];
+						network[i][j].deltaWeights[k] = learningRate * deltaW;
 						network[i][j].acumWeights[k] += (learningRate * deltaW);
 					}
 					
 				} 
 				//modificar o peso do bias
-				if(network[i][j].prevBiasWeight != 2){
-					network[i][j].acumB += learningRate * network[i][j].gradient * network[i][j].bias + momentum * network[i][j].prevBiasWeight;
-					network[i][j].prevBiasWeight = network[i][j].acumB;
+				if(network[i][j].prevBiasDelta != 2){
+					network[i][j].acumB += learningRate * network[i][j].gradient * network[i][j].bias + momentum * network[i][j].prevBiasDelta;
+					network[i][j].prevBiasDelta = learningRate * network[i][j].gradient * network[i][j].bias;
 				}
 				else{
 					network[i][j].acumB += learningRate * network[i][j].gradient * network[i][j].bias;
-					network[i][j].prevBiasWeight = network[i][j].acumB;
+					network[i][j].prevBiasDelta = learningRate * network[i][j].gradient * network[i][j].bias;
 				} 
 			}
 		}
