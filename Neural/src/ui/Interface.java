@@ -14,6 +14,7 @@ import java.awt.dnd.DropTargetListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -35,63 +36,52 @@ public class Interface extends JPanel implements DropTargetListener {
 	 */
 	private static final long serialVersionUID = 1L;
 	private int wNodes, hNodes;
-	
-	public static void main(String[] args)
-	{
+
+	public static void main(String[] args) {
 		new Interface(args);
 	}
-	
+
 	/**
 	 * Create the frame.
 	 */
 	public Interface(String[] args) {
-		
-		if(args.length == 0) {
+
+		if (args.length == 0) {
 			System.out.println("Please enter a valid number of layers");
 			return;
-		}
-		else {
-			for(int i = 0; i < args.length; i++) {
-				if(Integer.parseInt(args[i]) < 1) {
-					System.out.println("The minimum number of nodes in an intermediate layer is 7");
+		} else {
+			for (int i = 0; i < args.length; i++) {
+				if (Integer.parseInt(args[i]) < 1) {
+					System.out
+							.println("The minimum number of nodes in an intermediate layer is 7");
 					return;
 				}
 			}
 		}
-		Thread t = new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				Network.Init(args);
-			}
-		});
-		t.start();
+		Network.Init(args);
+
 		JFrame f = new JFrame();
 		f.add(this);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setPreferredSize(new Dimension(800, 600));
-		while(t.isAlive());
-		int w = (Network.network.length) * 200;
+		int w = (Network.network.length) * 210;
 		f.setVisible(true);
 		f.setSize(w, 1200);
 		new DropTarget(f, this);
-		
+
 		XYDataset ds = createDataset();
 		JFreeChart chart = ChartFactory.createXYLineChart("Error graph", "x",
 				"y", ds, PlotOrientation.VERTICAL, true, true, false);
-		
 
 		ChartPanel cp = new ChartPanel(chart);
 		cp.setPreferredSize(new Dimension(500, 300));
-		cp.setBounds((int)this.getWidth() / 20, (int) this.getHeight() / 2, cp.getPreferredSize().width,
-				cp.getPreferredSize().height);		
+		cp.setBounds((int) this.getWidth() / 20, (int) this.getHeight() / 2,
+				cp.getPreferredSize().width, cp.getPreferredSize().height);
 		this.add(cp);
 		while (true)
 			f.repaint(1000);
 	}
-	
-	
-	
+
 	private static XYDataset createDataset() {
 
 		DefaultXYDataset ds = new DefaultXYDataset();
@@ -212,24 +202,26 @@ public class Interface extends JPanel implements DropTargetListener {
 						d = 0;
 					}
 				} else {
-					g.setColor(Color.RED);
-					g.fillOval(x, this.getHeight() / 8 + 100, 50, 50);
-					g.setColor(Color.BLACK);
-					g.drawString(Double.toString(Network.network[i][j].output),
-							x, this.getHeight() / 8 + 100);
-					g.drawLine(x - 155, (int) this.getHeight() / 8, x,
-							this.getHeight() / 8 + 125);
-					g.drawLine(x - 155, (int) this.getHeight() / 8 + 45, x,
-							this.getHeight() / 8 + 125);
-					g.drawLine(x - 155, (int) this.getHeight() / 8 + 90, x,
-							this.getHeight() / 8 + 125);
-					g.drawLine(x - 155, (int) this.getHeight() / 8 + 135, x,
-							this.getHeight() / 8 + 125);
-					g.drawLine(x - 155, (int) this.getHeight() / 8 + 180, x,
-							this.getHeight() / 8 + 125);
-					g.drawLine(x - 155, (int) this.getHeight() / 8 + 280, x,
-							this.getHeight() / 8 + 125);
+						g.setColor(Color.RED);
+						g.fillOval(x, this.getHeight() / 8 + 80 * (j + 1), 50, 50);
+						g.setColor(Color.BLACK);
+						g.drawString(
+								Double.toString(Network.network[i][j].output),
+								x, this.getHeight() / 8 + 80 * (j + 1));
+						g.drawLine(x - 155, (int) this.getHeight() / 8, x,
+								this.getHeight() / 8 + 95 * (j + 1));
+						g.drawLine(x - 155, (int) this.getHeight() / 8 + 45, x,
+								this.getHeight() / 8 + 95 * (j + 1));
+						g.drawLine(x - 155, (int) this.getHeight() / 8 + 90, x,
+								this.getHeight() / 8 + 95 * (j + 1));
+						g.drawLine(x - 155, (int) this.getHeight() / 8 + 135,
+								x, this.getHeight() / 8 + 95 * (j + 1));
+						g.drawLine(x - 155, (int) this.getHeight() / 8 + 180,
+								x, this.getHeight() / 8 + 95 * (j + 1));
+						g.drawLine(x - 155, (int) this.getHeight() / 8 + 280,
+								x, this.getHeight() / 8 + 95 * (j + 1));
 
+					
 				}
 			}
 			x += 200;
@@ -247,7 +239,7 @@ public class Interface extends JPanel implements DropTargetListener {
 		for (DataFlavor flavor : flavors) {
 
 			try {
-
+				
 				// If the drop items are files
 				if (flavor.isFlavorJavaFileListType()) {
 
@@ -258,10 +250,17 @@ public class Interface extends JPanel implements DropTargetListener {
 
 					// Loop them through
 					for (File file : files) {
-
-						// Print out the file path
-						System.out.println("File path is '" + file.getPath()
-								+ "'.");
+						System.out.println("Enter de n of nodes you want for each layer, enter 0 when you are done.");
+						Scanner in = new Scanner(System.in);
+						String[] arg = new String[5];
+						int i = in.nextInt(), counter = 0;
+						if(i == 0) {
+							System.out.println("You need to have at least one intermediate layer.");
+						}
+						while (in.nextInt() != 0) {
+							arg[counter] = Integer.toString(i);
+							i++;
+						}
 
 					}
 
@@ -296,6 +295,5 @@ public class Interface extends JPanel implements DropTargetListener {
 	public void dropActionChanged(DropTargetDragEvent arg0) {
 
 	}
-	
 
 }

@@ -41,7 +41,7 @@ public class Network {
 
 		realError = 1;
 		learningRate = 0.05;
-		momentum = 0.2;
+		momentum = 0.3;
 		target = new double[2];
 
 		for (int i = 1; i < network.length; i++) {
@@ -52,7 +52,7 @@ public class Network {
 
 		int numTimes = 0;
 
-		while (numTimes < 1000) {
+		while (numTimes < 100) {
 
 			numTimes++;
 
