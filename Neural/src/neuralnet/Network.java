@@ -44,7 +44,7 @@ public class Network {
 
 		realError = 1;
 		learningRate = 0.05;
-		momentum = 0.3;
+		momentum = 0.7;
 		target = new double[2];
 
 		for (int i = 1; i < network.length; i++) {
@@ -55,7 +55,7 @@ public class Network {
 
 		int numTimes = 0;
 
-		while (numTimes < 1000) {
+		while (numTimes < 2000) {
 			numTimes++;
 
 			if (realError < 0.001)
@@ -158,18 +158,18 @@ public class Network {
 			for (int j = 0; j < network[i].length; j++) {
 				for (int k = 0; k < network[i][j].dweights.length; k++) {
 
-					// modificaçao do learning rate
-					// if(network[i][j].gradient * network[i-1][k].output *
-					// network[i][j].prevGradient * network[i-1][k].prevOutput >
-					// 0){
-					// network[i][j].learningRate *= 1.2;
-					// }
-					// else if(network[i][j].gradient * network[i-1][k].output *
-					// network[i][j].prevGradient * network[i-1][k].prevOutput <
-					// 0){
-					// network[i][j].learningRate *= 0.7;
-					//
-					// }
+//				    modificaçao do learning rate
+//					if (network[i][j].gradient * network[i - 1][k].output
+//							* network[i][j].prevGradient
+//							* network[i - 1][k].prevOutput > 0) {
+//						network[i][j].learningRate *= 1.2;
+//					} else if (network[i][j].gradient
+//							* network[i - 1][k].output
+//							* network[i][j].prevGradient
+//							* network[i - 1][k].prevOutput < 0) {
+//						network[i][j].learningRate *= 0.7;
+//
+//					}
 
 					// modificar os pesos
 					double deltaW = network[i][j].gradient
