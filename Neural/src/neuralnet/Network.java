@@ -13,7 +13,7 @@ public class Network {
 	static double[] target;
 	static double error, realError, sumErrors;
 	static double numErrors;
-	static double learningRate,momentum;
+	public static double learningRate,momentum;
 	static int numHiddenLayers;
 	static int[] numNodes;
 	static double numHits,numTests; 
@@ -39,19 +39,20 @@ public class Network {
 
 		network[0] = new Node[input.get(0).size() - 3];
 
+		realError = 1;
+		learningRate = 0.05;
+		momentum = 0.2;
+		target = new double[2];
+
 		for (int i = 1; i < network.length; i++) {
 			for (int j = 0; j < network[i].length; j++) {
-				network[i][j] = new Node(network[i - 1].length, i);
+				network[i][j] = new Node(network[i - 1].length, i, learningRate);
 			}
 		}
 
-		realError = 1;
-		learningRate = 0.04;
-		momentum = 0.2;
-		target = new double[2];
 		int numTimes = 0;
 
-		while (numTimes < 2000) {
+		while (numTimes < 1000) {
 
 			numTimes++;
 
@@ -63,8 +64,9 @@ public class Network {
 
 			randomInput();
 			realError = sumErrors / (2*numErrors);
+			//System.out.println("Error is " + realError);
 			if(numTimes % 100 == 0)
-				System.out.println("Error is " + realError);
+				System.out.println("Error is " + realError + " ----- Epoch is " + numTimes);
 		}
 
 		testFase();
@@ -119,6 +121,7 @@ public class Network {
 		//calculo do gradiente em nos de output
 		for(int i = 0; i < network[network.length - 1].length; i++){
 			error += network[network.length - 1][i].output - target[i];
+			network[network.length - 1][i].prevGradient = network[network.length - 1][i].gradient;
 			network[network.length - 1][i].gradient = network[network.length - 1][i].output
 					* (1-network[network.length - 1][i].output)
 					* (network[network.length - 1][i].output - target[i]);
@@ -127,7 +130,7 @@ public class Network {
 
 		sumErrors += error*error;
 		numErrors++;
-		
+
 		//calculo do gradiente em nos escondidos
 		for (int i = network.length - 2; i > 0; i--) {
 			for (int j = 0; j < network[i].length; j++) {
@@ -136,6 +139,7 @@ public class Network {
 					sum += network[i + 1][k].gradient
 							* network[i + 1][k].dweights[j];
 				}
+				network[i][j].prevGradient = network[i][j].gradient;
 				network[i][j].gradient = network[i][j].getOutput()
 						* (1 - network[i][j].getOutput()) * sum;
 			}
@@ -144,28 +148,41 @@ public class Network {
 		for (int i = network.length - 1; i > 0; i--) {
 			for (int j = 0; j < network[i].length; j++) {
 				for (int k = 0; k < network[i][j].dweights.length; k++) {
+
+					//modificaçao do learning rate
+//						if(network[i][j].gradient * network[i-1][k].output * network[i][j].prevGradient * network[i-1][k].prevOutput > 0){
+//							network[i][j].learningRate *= 1.2;
+//						}
+//						else if(network[i][j].gradient * network[i-1][k].output * network[i][j].prevGradient * network[i-1][k].prevOutput < 0){
+//							network[i][j].learningRate *= 0.7;
+//							
+//						}
+					
 					// modificar os pesos
 					double deltaW = network[i][j].gradient
 							* network[i - 1][k].getOutput();
 
-					if(network[i][j].prevWeights != null){
-
-						network[i][j].dweights[k] -= (learningRate * deltaW + network[i][j].prevWeights[k] * momentum);	
-						network[i][j].prevWeights[k] = network[i][j].dweights[k];
+					//com momentum
+					if(network[i][j].prevDeltas != null){
+						network[i][j].dweights[k] -= (network[i][j].learningRate * deltaW + network[i][j].prevDeltas[k] * momentum);	
+						network[i][j].prevDeltas[k] = network[i][j].learningRate * deltaW;
 					}
 					else{
-						network[i][j].prevWeights = new double[network[i][j].dweights.length];
-						network[i][j].dweights[k] -= (learningRate * deltaW);
+						network[i][j].prevDeltas = new double[network[i][j].dweights.length];
+						network[i][j].prevDeltas[k] = network[i][j].learningRate * deltaW;
+						network[i][j].dweights[k] -= (network[i][j].learningRate * deltaW);
 					}
 				}
 				//modificar o peso do bias
-				if(network[i][j].prevBiasWeight != 2){
-					network[i][j].biasWeight -= (learningRate * network[i][j].gradient * network[i][j].bias + momentum * network[i][j].prevBiasWeight);
-					network[i][j].prevBiasWeight = network[i][j].biasWeight;
+				
+				//com momentum
+				if(network[i][j].prevBiasDelta != 2){
+					network[i][j].biasWeight -= (network[i][j].learningRate * network[i][j].gradient * network[i][j].bias + momentum * network[i][j].prevBiasDelta);
+					network[i][j].prevBiasDelta = network[i][j].learningRate * network[i][j].gradient * network[i][j].bias;
 				}
 				else{
-					network[i][j].prevBiasWeight = network[i][j].biasWeight;
-					network[i][j].biasWeight -= learningRate * network[i][j].gradient * network[i][j].bias;
+					network[i][j].prevBiasDelta = network[i][j].learningRate * network[i][j].gradient * network[i][j].bias;
+					network[i][j].biasWeight -= network[i][j].learningRate * network[i][j].gradient * network[i][j].bias;
 				}  
 			}
 		}

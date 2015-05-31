@@ -49,9 +49,9 @@ public class Input {
 				String[] node=nodes[i].split(",");
 				Node n;
 				if(layer==1)
-					n=new Node(inputSize, layer);
+					n=new Node(inputSize, layer, Network.learningRate);
 				else
-					n=new Node(Network.network[layer - 1].length, layer);
+					n=new Node(Network.network[layer - 1].length, layer, Network.learningRate);
 				for (int j = 0; j < node.length; j++) {
 					n.dweights[j]=Double.parseDouble(node[i]);
 				}
