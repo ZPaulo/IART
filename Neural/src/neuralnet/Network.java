@@ -10,6 +10,7 @@ public class Network {
 
 	public static Node[][] network;
 	public static ArrayList<ArrayList<ArrayList<Double>>> input, inputCopy;
+	public static ArrayList<ArrayList<Double>> oldinput;
 	static double target;
 	static double error, realError, sumErrors,prevRealError;
 	static double numErrors;
@@ -48,7 +49,7 @@ public class Network {
 		realError = 1;
 		prevRealError = 0;
 		learningRate = 0.01;
-		momentum = 0.05;
+		momentum = 0.2;
 		int numTimes = 0;
 
 		while (numTimes < 2000) {
@@ -64,45 +65,44 @@ public class Network {
 
 			randomInput();
 			realError = sumErrors / (2*numErrors);
-			if(numTimes % 100 == 0)
-				System.out.println("Error is " + realError);
+			if(numTimes % 100 == 0){
+				System.out.println("Error is " + realError + " ------- " + error);
+			}
 		}
 
 		testFase();
 
 	}
 
-	public static void testFase() {
-
+public static void testFase() {
+		
 		try {
-			Input.read_input("test_data.txt");
+			Input.old_read_input("test_data.txt");
 		} catch (IOException e) {
 			System.out.println("Couldn't read file");
 		}
-
+		
 		numHits = 0.0;
 		numTests = 0.0;
-
-		for(int i = 0; i < input.size(); i++){
-			for(int j = 0; j < input.get(i).size(); j++){
-				network[0] = new Node[input.get(i).get(j).size() - 2];
-				for(int k = 1; k < input.get(j).size() - 1; k++)
-					network[0][k-1] = new Node(input.get(i).get(j).get(k));
-
-				forward();
-				target = input.get(i).get(j).get(input.get(i).get(j).size()-1);
-
-				if(((double) Math.round(network[numHiddenLayers+1][0].output)) == target)
-					numHits++;
-
-				numTests++;
+		
+		for(int i = 0; i < oldinput.size(); i++){
+			network[0] = new Node[oldinput.get(i).size() - 2];
+			for(int j = 1; j < oldinput.get(i).size() - 1; j++){
+				network[0][j-1] = new Node(oldinput.get(i).get(j));
 			}
-
+			
+			forward();
+			target = oldinput.get(i).get(oldinput.get(i).size()-1);
+			
+			if(((double) Math.round(network[numHiddenLayers+1][0].output)) == target)
+				numHits++;
+			
+			numTests++;
 		}
-
+		
 		System.out.println("Final error is " + realError);
-		System.out.println(error);
-
+		System.out.println("Output is " + network[network.length - 1][0].output);
+		System.out.println(target);
 		double hitRatio = (numHits / numTests);
 		System.out.println("Correct output was achieved " + hitRatio * 100.0 + "% of the times");
 	}
@@ -116,8 +116,6 @@ public class Network {
 	}
 
 	static void backPropagation() {
-
-
 		error = network[network.length - 1][0].getOutput() - target;
 		sumErrors += error*error;
 		numErrors++;
@@ -125,8 +123,9 @@ public class Network {
 		network[network.length - 1][0].gradient = network[network.length - 1][0]
 				.getOutput()
 				* (1 - network[network.length - 1][0].getOutput())
-				* error;
-
+				* (target - network[network.length - 1][0].getOutput());
+		
+		
 		for (int i = network.length - 2; i > 0; i--) {
 			for (int j = 0; j < network[i].length; j++) {
 				// retropropagar o erro para as camadas seguintes
@@ -143,18 +142,28 @@ public class Network {
 		for (int i = network.length - 1; i > 0; i--) {
 			for (int j = 0; j < network[i].length; j++) {
 				for (int k = 0; k < network[i][j].dweights.length; k++) {
-					// modificar os pesos
 					double deltaW = network[i][j].gradient
 							* network[i - 1][k].getOutput();
-					network[i][j].acumWeights[k] += deltaW;
+					
+					if(network[i][j].prevWeights != null){
+
+						network[i][j].acumWeights[k]  += (learningRate * deltaW + network[i][j].prevWeights[k] * momentum);	
+						network[i][j].prevWeights[k] = network[i][j].acumWeights[k];
+					}
+					else{
+						network[i][j].prevWeights = new double[network[i][j].dweights.length];
+						network[i][j].acumWeights[k] += (learningRate * deltaW);
+					}
+					
 				} 
 				//modificar o peso do bias
 				if(network[i][j].prevBiasWeight != 2){
 					network[i][j].acumB += learningRate * network[i][j].gradient * network[i][j].bias + momentum * network[i][j].prevBiasWeight;
-					network[i][j].prevBiasWeight = network[i][j].biasWeight;
+					network[i][j].prevBiasWeight = network[i][j].acumB;
 				}
 				else{
 					network[i][j].acumB += learningRate * network[i][j].gradient * network[i][j].bias;
+					network[i][j].prevBiasWeight = network[i][j].acumB;
 				} 
 			}
 		}
@@ -165,9 +174,11 @@ public class Network {
 		for (int i = network.length - 1; i > 0; i--) {
 			for (int j = 0; j < network[i].length; j++) {
 				for (int k = 0; k < network[i][j].dweights.length; k++) {
-					network[i][j].dweights[k] -= network[i][j].acumWeights[k];
+					network[i][j].dweights[k] += network[i][j].acumWeights[k];
+					network[i][j].acumWeights[k] = 0;
 				}
-				network[i][j].biasWeight -= network[i][j].acumB;
+				network[i][j].biasWeight += network[i][j].acumB;
+				network[i][j].acumB = 0;
 			}
 		}
 	}
@@ -212,10 +223,10 @@ public class Network {
 				backPropagation();
 			}
 			updateWeights();
-
 			inputCopy.remove(randomPos);
 
 		}
+
 	}
 
 }

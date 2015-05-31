@@ -19,13 +19,13 @@ public class Node {
 			dweights[i] = rand.nextDouble();// TODO mudar isto
 			if (rand.nextBoolean() == true)
 				dweights[i] *= -1;
-			acumWeights[i] = dweights[i];
+			acumWeights[i] = 0;
 		}
 		
 		biasWeight = rand.nextDouble();// TODO mudar isto
 		if (rand.nextBoolean() == true)
 			biasWeight *= -1;
-		acumB = biasWeight;
+		acumB = 0;
 		prevBiasWeight = 2;
 		this.layer = layer;
 	}

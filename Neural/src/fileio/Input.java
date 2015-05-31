@@ -26,6 +26,21 @@ public class Input {
 		}
 		br.close();
 	}
+	
+	static public void old_read_input(String filename) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader(filename));
+		String line;
+		Network.oldinput = new ArrayList<ArrayList<Double>>();
+		while ((line = br.readLine()) != null) {
+			String[] inputs = line.split(",");
+			ArrayList<Double> ad = new ArrayList<Double>();
+			for (int i = 0; i < inputs.length; i++)
+				ad.add(Double.parseDouble(inputs[i]));
+			Network.oldinput.add(ad);
+		}
+		br.close();
+	}
+	
 	static public void aux(String filename) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(filename));
 		BufferedWriter bw = new BufferedWriter(new FileWriter("newfile.txt"));
