@@ -78,6 +78,8 @@ public class Interface extends JPanel implements DropTargetListener {
 		}
 		JTextArea text = new JTextArea();
 		//JScrollPane scroll = new JScrollPane (text, 
+			//	   JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		//this.add(scroll);
 		PrintStream printStream = new PrintStream(new TextAreaOutputStream(
 				text, "Console"));
 		System.setOut(printStream);
