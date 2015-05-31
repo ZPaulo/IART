@@ -1,10 +1,12 @@
 package ui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
@@ -17,6 +19,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.DefaultXYDataset;
 import org.jfree.data.xy.XYDataset;
 
@@ -40,6 +46,18 @@ public class Interface extends JPanel implements DropTargetListener {
 	 */
 	public Interface(String[] args) {
 		
+		if(args.length == 0) {
+			System.out.println("Please enter a valid number of layers");
+			return;
+		}
+		else {
+			for(int i = 0; i < args.length; i++) {
+				if(Integer.parseInt(args[i]) < 1) {
+					System.out.println("The minimum number of nodes in an intermediate layer is 7");
+					return;
+				}
+			}
+		}
 		Thread t = new Thread(new Runnable() {
 			
 			@Override
@@ -48,13 +66,31 @@ public class Interface extends JPanel implements DropTargetListener {
 			}
 		});
 		t.start();
-		
 		JFrame f = new JFrame();
 		f.add(this);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f.setSize(700, 600);
+		f.setPreferredSize(new Dimension(800, 600));
+		while(t.isAlive());
+		int w = (Network.network.length) * 200;
 		f.setVisible(true);
+		f.setSize(w, 1200);
+		new DropTarget(f, this);
+		
+		XYDataset ds = createDataset();
+		JFreeChart chart = ChartFactory.createXYLineChart("Error graph", "x",
+				"y", ds, PlotOrientation.VERTICAL, true, true, false);
+		
+
+		ChartPanel cp = new ChartPanel(chart);
+		cp.setPreferredSize(new Dimension(500, 300));
+		cp.setBounds((int)this.getWidth() / 20, (int) this.getHeight() / 2, cp.getPreferredSize().width,
+				cp.getPreferredSize().height);		
+		this.add(cp);
+		while (true)
+			f.repaint(1000);
 	}
+	
+	
 	
 	private static XYDataset createDataset() {
 
