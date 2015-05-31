@@ -20,7 +20,9 @@ import java.util.Scanner;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -75,9 +77,12 @@ public class Interface extends JPanel implements DropTargetListener {
 			}
 		}
 		JTextArea text = new JTextArea();
+		JScrollPane scroll = new JScrollPane(text);
+		scroll.setVerticalScrollBarPolicy (ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		PrintStream printStream = new PrintStream(new TextAreaOutputStream(
 				text, "Console"));
 		System.setOut(printStream);
+		JOptionPane.showMessageDialog(f, "Please wait...");
 		Network.Init(arg);
 		int w = (Network.network.length) * 210;
 		this.setBounds(0, 0, w, 900);
@@ -86,6 +91,7 @@ public class Interface extends JPanel implements DropTargetListener {
 		JFreeChart chart = ChartFactory.createXYLineChart("Error graph", "Epoch",
 				"Error", ds, PlotOrientation.VERTICAL, true, true, false);
 		ChartPanel cp = new ChartPanel(chart);
+		chart.getXYPlot().getRangeAxis().setRange(0.195, 0.205);
 		cp.setBounds(0, (int) this.getHeight() / 2, (int) this.getWidth() / 2,
 				(int) this.getHeight() / 3);
 		f.add(cp);
@@ -98,6 +104,7 @@ public class Interface extends JPanel implements DropTargetListener {
 		f.setPreferredSize(new Dimension(800, 600));
 		f.setVisible(true);
 		f.setSize(w, 840);
+		f.setResizable(false);
 		new DropTarget(f, this);
 	}
 
