@@ -48,7 +48,7 @@ public class Network {
 
 		realError = 1;
 		learningRate = 0.05;
-		momentum = 0.3;
+		momentum = 0.2;
 		target = new double[2];
 		int numTimes = 0;
 
@@ -97,17 +97,11 @@ public class Network {
 
 			if(((double) Math.round(network[numHiddenLayers+1][0].output)) == target[0]){
 				numHits++;
-				System.out.println("Output1 is " + network[network.length - 1][0].output);
-				System.out.println("Output2 is " + network[network.length - 1][1].output);
-				System.out.println(target[0]);
-
 			}
 			numTests++;
 		}
 
 		System.out.println("Final error is " + realError);
-		System.out.println("Output is " + network[network.length - 1][0].output);
-		System.out.println(target[0]);
 		double hitRatio = (numHits / numTests);
 		System.out.println("Correct output was achieved " + hitRatio * 100.0 + "% of the times");
 	}
